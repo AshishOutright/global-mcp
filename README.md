@@ -76,6 +76,14 @@ The backend is the GMCP PHP module (part of the OutrightCRM install at `custom/g
    ```
 2. `npm run build` and serve `dist/` **from the same origin as the backend** (for example `https://gmcp.example.com/app/`), so the session cookie and CSRF token work. The build uses relative paths and works from any sub-folder.
 
+On the server that hosts the backend, one command builds the live version and publishes it to `<crm>/app/` (atomic swap, cache headers included):
+
+```bash
+CRM_ROOT=/path/to/crm npm run deploy:crm     # → https://<crm-host>/app/
+```
+
+The live instance runs at **https://gmcp.outrightcrm.in/app/**.
+
 The API is a single JSON endpoint: `POST {"action": "servers.list", ...}` with an `X-GMCP-Token` header; `GET ?csrf=1` returns the token. The demo backend in `src/api/demo/backend.ts` implements the same actions and response shapes.
 
 ## Deploy to GitHub Pages
@@ -100,6 +108,7 @@ src/
   pages/                 one file per screen
   styles/app.css         design tokens (light + dark) and components
 scripts/screenshots.mjs  README screenshot generator (Playwright)
+scripts/deploy-crm.sh    build LIVE mode and publish to <crm>/app/
 .github/workflows/       CI + GitHub Pages deploy
 ```
 
