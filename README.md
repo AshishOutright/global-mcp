@@ -6,7 +6,7 @@
 
 **Let Claude Code, Codex and Cursor work in GitHub, Jira and your tests, with guardrails, human approvals and a full audit log.**
 
-[Live demo](#live-demo) · [Features](#features) · [Run locally](#run-locally) · [Live backend mode](#live-backend-mode) · [Project structure](#project-structure)
+[Live demo](https://gmcp.outrightcrm.in/app/) · [Features](#features) · [Run locally](#run-locally) · [Live backend mode](#live-backend-mode) · [Project structure](#project-structure)
 
 ![Dashboard](docs/screenshots/dashboard.png)
 
