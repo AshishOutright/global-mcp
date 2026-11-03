@@ -4,6 +4,8 @@
 
 # GMCP: safe MCP servers for AI coding agents
 
+-- Live Demo : https://gmcp.outrightcrm.in/app/ --
+
 **Let Claude Code, Codex and Cursor work in GitHub, Jira and your tests, with guardrails, human approvals and a full audit log.**
 
 [Live demo](https://gmcp.outrightcrm.in/app/) · [Features](#features) · [Run locally](#run-locally) · [Live backend mode](#live-backend-mode) · [Project structure](#project-structure)
