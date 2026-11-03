@@ -1,0 +1,1746 @@
+{
+    "tools": [
+        {
+            "name": "github_list_repos",
+            "connector": "github",
+            "risk": "read",
+            "description": "List repositories the token can access (optionally for an org).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "org": {
+                        "type": "string",
+                        "description": "Organisation login; omit for the authenticated user"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "default": 30
+                    }
+                },
+                "required": [],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_get_repo",
+            "connector": "github",
+            "risk": "read",
+            "description": "Get repository metadata (default branch, visibility, open issues, permissions).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    }
+                },
+                "required": [
+                    "repo"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_list_issues",
+            "connector": "github",
+            "risk": "read",
+            "description": "List issues (not PRs) in a repository with optional state/labels/assignee filters.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "open",
+                            "closed",
+                            "all"
+                        ],
+                        "default": "open"
+                    },
+                    "labels": {
+                        "type": "string",
+                        "description": "Comma separated labels"
+                    },
+                    "assignee": {
+                        "type": "string"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "default": 30
+                    }
+                },
+                "required": [
+                    "repo"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_get_issue",
+            "connector": "github",
+            "risk": "read",
+            "description": "Get a single issue with body, labels, assignees and comment count.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "description": "Issue or pull request number"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "number"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_list_issue_comments",
+            "connector": "github",
+            "risk": "read",
+            "description": "List comments on an issue or pull request.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "description": "Issue or pull request number"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "default": 30
+                    }
+                },
+                "required": [
+                    "repo",
+                    "number"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_search_issues",
+            "connector": "github",
+            "risk": "read",
+            "description": "Search issues and PRs with GitHub search syntax, e.g. \"repo:acme/api is:open label:bug\".",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "default": 20
+                    }
+                },
+                "required": [
+                    "query"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_list_pulls",
+            "connector": "github",
+            "risk": "read",
+            "description": "List pull requests in a repository.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "open",
+                            "closed",
+                            "all"
+                        ],
+                        "default": "open"
+                    },
+                    "base": {
+                        "type": "string",
+                        "description": "Filter by base branch"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "default": 30
+                    }
+                },
+                "required": [
+                    "repo"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_get_pull",
+            "connector": "github",
+            "risk": "read",
+            "description": "Get a pull request: title, body, head/base, mergeable state, review decision.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "description": "Issue or pull request number"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "number"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_get_pull_diff",
+            "connector": "github",
+            "risk": "read",
+            "description": "Get the unified diff of a pull request (truncated at 120 KB).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "description": "Issue or pull request number"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "number"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_list_pull_files",
+            "connector": "github",
+            "risk": "read",
+            "description": "List files changed in a pull request with additions/deletions and patch.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "description": "Issue or pull request number"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "number"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_list_pull_reviews",
+            "connector": "github",
+            "risk": "read",
+            "description": "List reviews on a pull request.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "description": "Issue or pull request number"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "number"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_get_file",
+            "connector": "github",
+            "risk": "read",
+            "description": "Read a file from the repository at a ref (decoded text, max 200 KB).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "ref": {
+                        "type": "string",
+                        "description": "Branch, tag or SHA; default branch when omitted"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "path"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_list_directory",
+            "connector": "github",
+            "risk": "read",
+            "description": "List the entries of a directory in the repository.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "path": {
+                        "type": "string",
+                        "default": ""
+                    },
+                    "ref": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "repo"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_search_code",
+            "connector": "github",
+            "risk": "read",
+            "description": "Search code with GitHub code search syntax, e.g. \"repo:acme/api validateToken language:php\".",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "default": 20
+                    }
+                },
+                "required": [
+                    "query"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_list_commits",
+            "connector": "github",
+            "risk": "read",
+            "description": "List recent commits on a branch or path.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "sha": {
+                        "type": "string",
+                        "description": "Branch or SHA"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "default": 20
+                    }
+                },
+                "required": [
+                    "repo"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_list_branches",
+            "connector": "github",
+            "risk": "read",
+            "description": "List branches with their protection flag.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "default": 50
+                    }
+                },
+                "required": [
+                    "repo"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_list_workflow_runs",
+            "connector": "github",
+            "risk": "read",
+            "description": "List GitHub Actions workflow runs (CI results) with status and conclusion.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "branch": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "queued",
+                            "in_progress",
+                            "completed",
+                            "success",
+                            "failure"
+                        ]
+                    },
+                    "per_page": {
+                        "type": "integer",
+                        "default": 15
+                    }
+                },
+                "required": [
+                    "repo"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_get_workflow_run",
+            "connector": "github",
+            "risk": "read",
+            "description": "Get one workflow run and its jobs/steps with conclusions.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "run_id": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "run_id"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_list_check_runs",
+            "connector": "github",
+            "risk": "read",
+            "description": "List check runs for a commit SHA or branch (status checks on a PR head).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "ref": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "ref"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_create_issue",
+            "connector": "github",
+            "risk": "write",
+            "description": "Create an issue.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "labels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "assignees": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "repo",
+                    "title"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_update_issue",
+            "connector": "github",
+            "risk": "write",
+            "description": "Update an issue: title, body, state, labels or assignees.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "description": "Issue or pull request number"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "open",
+                            "closed"
+                        ]
+                    },
+                    "labels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "assignees": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "repo",
+                    "number"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_add_comment",
+            "connector": "github",
+            "risk": "write",
+            "description": "Comment on an issue or pull request.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "description": "Issue or pull request number"
+                    },
+                    "body": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "number",
+                    "body"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_create_branch",
+            "connector": "github",
+            "risk": "write",
+            "description": "Create a branch from another branch (or SHA).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "branch": {
+                        "type": "string",
+                        "description": "New branch name"
+                    },
+                    "from": {
+                        "type": "string",
+                        "description": "Source branch or SHA; default branch when omitted"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "branch"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_commit_file",
+            "connector": "github",
+            "risk": "write",
+            "description": "Create or update one file on a branch with a commit message (content as plain text).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "branch": {
+                        "type": "string"
+                    },
+                    "path": {
+                        "type": "string"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "branch",
+                    "path",
+                    "content",
+                    "message"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_create_pull",
+            "connector": "github",
+            "risk": "write",
+            "description": "Open a pull request from head into base.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "head": {
+                        "type": "string"
+                    },
+                    "base": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "draft": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                },
+                "required": [
+                    "repo",
+                    "title",
+                    "head",
+                    "base"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_update_pull",
+            "connector": "github",
+            "risk": "write",
+            "description": "Update a pull request title/body/state/base or mark ready for review.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "description": "Issue or pull request number"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "open",
+                            "closed"
+                        ]
+                    },
+                    "base": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "number"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_request_reviewers",
+            "connector": "github",
+            "risk": "write",
+            "description": "Request reviewers on a pull request.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "description": "Issue or pull request number"
+                    },
+                    "reviewers": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "repo",
+                    "number",
+                    "reviewers"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_submit_review",
+            "connector": "github",
+            "risk": "write",
+            "description": "Submit a pull request review (COMMENT, APPROVE or REQUEST_CHANGES).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "description": "Issue or pull request number"
+                    },
+                    "event": {
+                        "type": "string",
+                        "enum": [
+                            "COMMENT",
+                            "APPROVE",
+                            "REQUEST_CHANGES"
+                        ]
+                    },
+                    "body": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "number",
+                    "event"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_trigger_workflow",
+            "connector": "github",
+            "risk": "write",
+            "description": "Dispatch a GitHub Actions workflow (workflow_dispatch) on a ref with inputs.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "workflow": {
+                        "type": "string",
+                        "description": "Workflow file name (ci.yml) or id"
+                    },
+                    "ref": {
+                        "type": "string"
+                    },
+                    "inputs": {
+                        "type": "object",
+                        "additionalProperties": true
+                    }
+                },
+                "required": [
+                    "repo",
+                    "workflow",
+                    "ref"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_rerun_workflow",
+            "connector": "github",
+            "risk": "write",
+            "description": "Re-run a workflow run (optionally failed jobs only).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "run_id": {
+                        "type": "integer"
+                    },
+                    "failed_only": {
+                        "type": "boolean",
+                        "default": true
+                    }
+                },
+                "required": [
+                    "repo",
+                    "run_id"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_merge_pull",
+            "connector": "github",
+            "risk": "destructive",
+            "description": "Merge a pull request (merge, squash or rebase).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "number": {
+                        "type": "integer",
+                        "description": "Issue or pull request number"
+                    },
+                    "method": {
+                        "type": "string",
+                        "enum": [
+                            "merge",
+                            "squash",
+                            "rebase"
+                        ],
+                        "default": "squash"
+                    },
+                    "commit_title": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "number"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "github_delete_branch",
+            "connector": "github",
+            "risk": "destructive",
+            "description": "Delete a branch.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "repo": {
+                        "type": "string",
+                        "description": "Repository as owner/name, e.g. acme/api"
+                    },
+                    "branch": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "repo",
+                    "branch"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_list_projects",
+            "connector": "jira",
+            "risk": "read",
+            "description": "List Jira projects visible to the connection.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "Filter by name/key"
+                    }
+                },
+                "required": [],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_search_issues",
+            "connector": "jira",
+            "risk": "read",
+            "description": "Search issues with JQL, e.g. \"project = ENG AND status = \\\"In Progress\\\" ORDER BY updated DESC\".",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "jql": {
+                        "type": "string"
+                    },
+                    "max_results": {
+                        "type": "integer",
+                        "default": 25
+                    },
+                    "fields": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Extra fields to return"
+                    }
+                },
+                "required": [
+                    "jql"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_get_issue",
+            "connector": "jira",
+            "risk": "read",
+            "description": "Get an issue with description, status, assignee, labels, components and links.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "issue_key": {
+                        "type": "string",
+                        "description": "Issue key, e.g. ENG-123"
+                    }
+                },
+                "required": [
+                    "issue_key"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_list_comments",
+            "connector": "jira",
+            "risk": "read",
+            "description": "List comments on an issue.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "issue_key": {
+                        "type": "string",
+                        "description": "Issue key, e.g. ENG-123"
+                    },
+                    "max_results": {
+                        "type": "integer",
+                        "default": 25
+                    }
+                },
+                "required": [
+                    "issue_key"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_list_transitions",
+            "connector": "jira",
+            "risk": "read",
+            "description": "List the workflow transitions currently available for an issue.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "issue_key": {
+                        "type": "string",
+                        "description": "Issue key, e.g. ENG-123"
+                    }
+                },
+                "required": [
+                    "issue_key"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_get_issue_types",
+            "connector": "jira",
+            "risk": "read",
+            "description": "List the issue types of a project (needed before creating an issue).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "project": {
+                        "type": "string",
+                        "description": "Project key"
+                    }
+                },
+                "required": [
+                    "project"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_list_sprints",
+            "connector": "jira",
+            "risk": "read",
+            "description": "List sprints on a board (Jira Software).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "board_id": {
+                        "type": "integer"
+                    },
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "active",
+                            "future",
+                            "closed"
+                        ],
+                        "default": "active"
+                    }
+                },
+                "required": [
+                    "board_id"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_list_boards",
+            "connector": "jira",
+            "risk": "read",
+            "description": "List Jira Software boards, optionally for a project.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "project": {
+                        "type": "string"
+                    }
+                },
+                "required": [],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_search_users",
+            "connector": "jira",
+            "risk": "read",
+            "description": "Find users by name or email (for assignment).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "query": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "query"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_create_issue",
+            "connector": "jira",
+            "risk": "write",
+            "description": "Create an issue in a project.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "project": {
+                        "type": "string",
+                        "description": "Project key"
+                    },
+                    "summary": {
+                        "type": "string"
+                    },
+                    "issue_type": {
+                        "type": "string",
+                        "default": "Task"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "Plain text or markdown-ish text"
+                    },
+                    "labels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "priority": {
+                        "type": "string"
+                    },
+                    "assignee_account_id": {
+                        "type": "string"
+                    },
+                    "parent_key": {
+                        "type": "string",
+                        "description": "Epic/parent key for sub-tasks"
+                    },
+                    "fields": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Extra raw fields"
+                    }
+                },
+                "required": [
+                    "project",
+                    "summary"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_update_issue",
+            "connector": "jira",
+            "risk": "write",
+            "description": "Update summary, description, labels, priority or raw fields of an issue.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "issue_key": {
+                        "type": "string",
+                        "description": "Issue key, e.g. ENG-123"
+                    },
+                    "summary": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "labels": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "priority": {
+                        "type": "string"
+                    },
+                    "fields": {
+                        "type": "object",
+                        "additionalProperties": true
+                    }
+                },
+                "required": [
+                    "issue_key"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_add_comment",
+            "connector": "jira",
+            "risk": "write",
+            "description": "Add a comment to an issue.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "issue_key": {
+                        "type": "string",
+                        "description": "Issue key, e.g. ENG-123"
+                    },
+                    "body": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "issue_key",
+                    "body"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_transition_issue",
+            "connector": "jira",
+            "risk": "write",
+            "description": "Move an issue through its workflow by transition name or id (e.g. \"In Progress\", \"Done\").",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "issue_key": {
+                        "type": "string",
+                        "description": "Issue key, e.g. ENG-123"
+                    },
+                    "transition": {
+                        "type": "string"
+                    },
+                    "comment": {
+                        "type": "string"
+                    },
+                    "resolution": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "issue_key",
+                    "transition"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_assign_issue",
+            "connector": "jira",
+            "risk": "write",
+            "description": "Assign an issue to a user by account id (or null to unassign).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "issue_key": {
+                        "type": "string",
+                        "description": "Issue key, e.g. ENG-123"
+                    },
+                    "account_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "issue_key"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_link_issues",
+            "connector": "jira",
+            "risk": "write",
+            "description": "Link two issues (Blocks, Relates, Duplicate, …).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "inward_key": {
+                        "type": "string"
+                    },
+                    "outward_key": {
+                        "type": "string"
+                    },
+                    "link_type": {
+                        "type": "string",
+                        "default": "Relates"
+                    }
+                },
+                "required": [
+                    "inward_key",
+                    "outward_key"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_add_worklog",
+            "connector": "jira",
+            "risk": "write",
+            "description": "Log time on an issue (e.g. \"2h 30m\").",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "issue_key": {
+                        "type": "string",
+                        "description": "Issue key, e.g. ENG-123"
+                    },
+                    "time_spent": {
+                        "type": "string"
+                    },
+                    "comment": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "issue_key",
+                    "time_spent"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "jira_delete_issue",
+            "connector": "jira",
+            "risk": "destructive",
+            "description": "Delete an issue permanently.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "issue_key": {
+                        "type": "string",
+                        "description": "Issue key, e.g. ENG-123"
+                    },
+                    "delete_subtasks": {
+                        "type": "boolean",
+                        "default": false
+                    }
+                },
+                "required": [
+                    "issue_key"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "tests_run",
+            "connector": "tests",
+            "risk": "write",
+            "description": "Start a test run on the configured runner (GitHub Actions workflow or HTTP CI endpoint). Returns a run id to poll with tests_get_run.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Label for this run, e.g. \"PR #42 unit tests\""
+                    },
+                    "ref": {
+                        "type": "string",
+                        "description": "Branch / SHA to test; runner default when omitted"
+                    },
+                    "suite": {
+                        "type": "string",
+                        "description": "Suite or test path filter"
+                    },
+                    "inputs": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Extra workflow inputs"
+                    }
+                },
+                "required": [],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "tests_get_run",
+            "connector": "tests",
+            "risk": "read",
+            "description": "Get the current status and summary of a test run (refreshes from the runner).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "run_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "run_id"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "tests_list_runs",
+            "connector": "tests",
+            "risk": "read",
+            "description": "List recent test runs for this server.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "queued",
+                            "running",
+                            "passed",
+                            "failed",
+                            "error",
+                            "cancelled"
+                        ]
+                    },
+                    "limit": {
+                        "type": "integer",
+                        "default": 20
+                    }
+                },
+                "required": [],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "tests_get_logs",
+            "connector": "tests",
+            "risk": "read",
+            "description": "Get job/step results and captured logs for a test run.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "run_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "run_id"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "tests_cancel_run",
+            "connector": "tests",
+            "risk": "write",
+            "description": "Cancel a running test run.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "run_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "run_id"
+                ],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "gmcp_whoami",
+            "connector": "meta",
+            "risk": "read",
+            "description": "Describe this agent identity: server, key scope, policy, connected systems and limits.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {},
+                "required": [],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "gmcp_list_permissions",
+            "connector": "meta",
+            "risk": "read",
+            "description": "Dry-run the guardrails for every available tool (or one tool with sample args) and report allow / deny / approve.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "tool": {
+                        "type": "string",
+                        "description": "Check a single tool"
+                    },
+                    "args": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Sample arguments to evaluate conditions against"
+                    }
+                },
+                "required": [],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "gmcp_recent_activity",
+            "connector": "meta",
+            "risk": "read",
+            "description": "Your own recent tool calls from the audit log (status, reason, duration).",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "limit": {
+                        "type": "integer",
+                        "default": 20
+                    },
+                    "status": {
+                        "type": "string"
+                    }
+                },
+                "required": [],
+                "additionalProperties": false
+            }
+        },
+        {
+            "name": "gmcp_approval_status",
+            "connector": "meta",
+            "risk": "read",
+            "description": "Check a pending approval. When approved, the tool result is returned here.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "approval_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "approval_id"
+                ],
+                "additionalProperties": false
+            }
+        }
+    ],
+    "coming_soon": {
+        "gitlab": {
+            "label": "GitLab",
+            "desc": "Merge requests, issues and pipelines"
+        },
+        "linear": {
+            "label": "Linear",
+            "desc": "Issues, cycles and projects"
+        },
+        "slack": {
+            "label": "Slack",
+            "desc": "Post run summaries and approval requests"
+        },
+        "sentry": {
+            "label": "Sentry",
+            "desc": "Read issues and stack traces"
+        },
+        "shell": {
+            "label": "Local test runner",
+            "desc": "Run a command on a self-hosted runner"
+        },
+        "playwright": {
+            "label": "Playwright / Cypress",
+            "desc": "Browser test runs with traces"
+        }
+    },
+    "connection_types": {
+        "github": {
+            "label": "GitHub",
+            "status": "available",
+            "icon": "github",
+            "desc": "Issues, pull requests, files, branches, Actions runs.",
+            "help": "Create a fine-grained personal access token with Contents, Issues, Pull requests, Actions (read/write as needed) and Metadata (read).",
+            "config": [
+                {
+                    "key": "api_base",
+                    "label": "API base URL",
+                    "type": "text",
+                    "default": "https://api.github.com",
+                    "hint": "GitHub Enterprise: https://ghe.example.com/api/v3"
+                },
+                {
+                    "key": "default_owner",
+                    "label": "Default owner / org",
+                    "type": "text",
+                    "hint": "Used when an agent passes a bare repo name"
+                }
+            ],
+            "secret": [
+                {
+                    "key": "token",
+                    "label": "Personal access token",
+                    "type": "password",
+                    "required": true
+                }
+            ]
+        },
+        "jira": {
+            "label": "Jira",
+            "status": "available",
+            "icon": "jira",
+            "desc": "Projects, JQL search, issues, comments, transitions, sprints.",
+            "help": "Use a Jira Cloud API token (id.atlassian.com → Security → API tokens) together with the account email.",
+            "config": [
+                {
+                    "key": "base_url",
+                    "label": "Site URL",
+                    "type": "text",
+                    "placeholder": "https://acme.atlassian.net",
+                    "required": true
+                },
+                {
+                    "key": "email",
+                    "label": "Account email",
+                    "type": "text",
+                    "required": true
+                }
+            ],
+            "secret": [
+                {
+                    "key": "api_token",
+                    "label": "API token",
+                    "type": "password",
+                    "required": true
+                }
+            ]
+        },
+        "tests": {
+            "label": "Test runner",
+            "status": "available",
+            "icon": "tests",
+            "desc": "Trigger and poll test runs on GitHub Actions or any HTTP CI endpoint.",
+            "help": "GitHub Actions: the workflow must have a workflow_dispatch trigger. HTTP: POST run_url receives {run_id,name,ref,suite,inputs} and should answer {id,status,url}; GET status_url (with {id}) answers {status,total,passed,failed,url,logs}.",
+            "config": [
+                {
+                    "key": "runner_type",
+                    "label": "Runner type",
+                    "type": "select",
+                    "options": [
+                        [
+                            "github_actions",
+                            "GitHub Actions workflow"
+                        ],
+                        [
+                            "http",
+                            "HTTP CI endpoint"
+                        ],
+                        [
+                            "shell",
+                            "Self-hosted shell runner (coming soon)"
+                        ]
+                    ],
+                    "default": "github_actions",
+                    "required": true
+                },
+                {
+                    "key": "repo",
+                    "label": "Repository (owner/name)",
+                    "type": "text",
+                    "show_if": {
+                        "runner_type": "github_actions"
+                    }
+                },
+                {
+                    "key": "workflow",
+                    "label": "Workflow file",
+                    "type": "text",
+                    "placeholder": "tests.yml",
+                    "show_if": {
+                        "runner_type": "github_actions"
+                    }
+                },
+                {
+                    "key": "ref",
+                    "label": "Default ref",
+                    "type": "text",
+                    "default": "main",
+                    "show_if": {
+                        "runner_type": "github_actions"
+                    }
+                },
+                {
+                    "key": "run_url",
+                    "label": "Run URL (POST)",
+                    "type": "text",
+                    "show_if": {
+                        "runner_type": "http"
+                    }
+                },
+                {
+                    "key": "status_url",
+                    "label": "Status URL (GET, use {id})",
+                    "type": "text",
+                    "show_if": {
+                        "runner_type": "http"
+                    }
+                },
+                {
+                    "key": "cancel_url",
+                    "label": "Cancel URL (POST, optional)",
+                    "type": "text",
+                    "show_if": {
+                        "runner_type": "http"
+                    }
+                },
+                {
+                    "key": "ping_url",
+                    "label": "Health URL (GET, optional)",
+                    "type": "text",
+                    "show_if": {
+                        "runner_type": "http"
+                    }
+                },
+                {
+                    "key": "auth_header",
+                    "label": "Auth header name",
+                    "type": "text",
+                    "default": "Authorization",
+                    "show_if": {
+                        "runner_type": "http"
+                    }
+                }
+            ],
+            "secret": [
+                {
+                    "key": "token",
+                    "label": "Token",
+                    "type": "password",
+                    "required": true
+                }
+            ]
+        }
+    }
+}
